@@ -23,7 +23,7 @@ def format_date(value):
 def format_score(value):
     if value < -5:
         value = 'Все плохо'
-    elif (value > -5) and (value <= 5):
+    elif (value >= -5) and (value <= 5):
         value = 'Нейтрально'
     elif value > 5:
         value = 'Хорошо'
@@ -44,5 +44,16 @@ def format_num_comments(value):
 @register.filter
 def format_selftext(value, count=5):
     selftext = value.split()
-    value = ' '.join(selftext[:count]) + '...' + ' '.join(selftext[-count:])
+    if len(selftext) == 0:
+        value = '...'
+    elif len(selftext) <= 3:
+        value = selftext
+    elif len(selftext) >= count * 2:
+        value = ' '.join(selftext[:count]) + '...' + ' '.join(selftext[-count:])
+    elif len(selftext) < count * 2:
+        if len(selftext) % 2 == 0:
+            value = ' '.join(selftext[:(count / 2)]) + '...' + ' '.join(selftext[-(count / 2):])
+        else:
+            value = ' '.join(selftext[:((count // 2) + 1)]) + '...' + ' '.join(selftext[-((count // 2) - 1):])
+
     return value
